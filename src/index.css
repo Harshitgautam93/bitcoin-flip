@@ -1,43 +1,38 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden; /* Prevent scrollbars if unnecessary */
-}
+
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow: hidden; /* Prevent body scroll */
+  overflow-y: auto; /* Allow scrolling */
 }
 
 #root {
   height: 100%;
-  overflow: hidden; /* Prevent body scroll */
+  overflow-y: auto; /* Allow scrolling */
 }
 
 .scroll-container {
-  height: 200vh; /* Make this larger than viewport height for scrolling effect */
+  height: 200vh; /* Extend this to ensure enough space for scrolling */
   position: relative;
+  z-index: 1; /* Ensure it's on top of the Three.js canvas */
 }
 
 .threejs-canvas {
   width: 100vw;
-  height: 100vh; /* Take full viewport height initially */
-  position: absolute;
+  height: 100vh;
+  position: fixed; /* Keep the canvas fixed for the effect */
   top: 0;
   left: 0;
+  z-index: -1; /* Ensure it's behind the scrollable content */
 }
-
