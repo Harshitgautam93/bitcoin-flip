@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Hide scrollbars */
+}
+
+.App {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden; /* Hide scrollbars */
+}
+
+.content {
+  position: relative;
+  z-index: 1; /* Ensure content is above the background */
+  color: white; /* Make text visible against the dark background */
+}
