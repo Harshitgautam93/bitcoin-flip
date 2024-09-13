@@ -9,40 +9,34 @@ const BitcoinFlip = () => {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    
+
     // Setting canvas size
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    
+
     // Append canvas to the mountRef
     const canvas = renderer.domElement;
-    mountRef.current.appendChild(canvas);
+    if (mountRef.current) {
+      mountRef.current.appendChild(canvas);
+    }
 
     // Background color
     scene.background = new THREE.Color(0x000000);
 
     // Ambient light for consistent illumination
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    // Point lights for even illumination from various angles
-    const pointLight1 = new THREE.PointLight(0xffffff, 1);
-    pointLight1.position.set(10, 10, 10);
-    scene.add(pointLight1);
+    // Point lights
+    const pointLights = [
+      new THREE.PointLight(0xffffff, 1, 10, 10),
+      new THREE.PointLight(0xffffff, 1, -10, -10),
+      new THREE.PointLight(0xffffff, 1, 10, -10),
+      new THREE.PointLight(0xffffff, 1, -10, 10),
+    ];
+    pointLights.forEach(light => scene.add(light));
 
-    const pointLight2 = new THREE.PointLight(0xffffff, 1);
-    pointLight2.position.set(-10, -10, 10);
-    scene.add(pointLight2);
-
-    const pointLight3 = new THREE.PointLight(0xffffff, 1);
-    pointLight3.position.set(10, -10, -10);
-    scene.add(pointLight3);
-
-    const pointLight4 = new THREE.PointLight(0xffffff, 1);
-    pointLight4.position.set(-10, 10, -10);
-    scene.add(pointLight4);
-
-    // Texture loader
+    // Texture loader for coin
     const textureLoader = new THREE.TextureLoader();
     const coinTexture = textureLoader.load('/bitcoin.png', () => {
       console.log('Texture loaded successfully!');
@@ -50,51 +44,76 @@ const BitcoinFlip = () => {
       console.error('Texture loading failed', err);
     });
 
-    // Enhanced material to reduce light effects
+    // Enhanced material for the Bitcoin coin
     const material = new THREE.MeshStandardMaterial({
       map: coinTexture,
       metalness: 0.1,
       roughness: 0.1,
     });
 
-    // Coin geometry
+    // Bitcoin coin geometry
     const geometry = new THREE.CylinderGeometry(3, 3, 0.4, 100);
     const bitcoinMesh = new THREE.Mesh(geometry, material);
     bitcoinMesh.position.set(-10, 0, 0);
     scene.add(bitcoinMesh);
 
+    // Planets creation and addition
+    const createPlanet = (radius, textureUrl, position) => {
+      const planetTexture = textureLoader.load(textureUrl);
+      const planetMaterial = new THREE.MeshStandardMaterial({
+        map: planetTexture,
+        metalness: 0.2,
+        roughness: 0.8,
+      });
+      const planetGeometry = new THREE.SphereGeometry(radius, 32, 32);
+      const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
+      planetMesh.position.set(...position);
+      return planetMesh;
+    };
+
+    scene.add(createPlanet(2, '/planet1.jpg', [20, 10, -30]));
+    scene.add(createPlanet(1.5, '/planet2.jpg', [-15, -5, 25]));
+    scene.add(createPlanet(1, '/planet3.jpg', [0, -20, -50]));
+
     // Camera position
     camera.position.set(0, 0, 10);
 
-    // Starfield with larger particles
-    const starGeometry = new THREE.BufferGeometry();
-    const starCount = 1000;
-    const positions = new Float32Array(starCount * 3);
+    // Create star field
+    const createStarField = (starCount, size, opacity) => {
+      const starGeometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(starCount * 3);
+      for (let i = 0; i < starCount; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 3000;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 3000;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 3000;
+      }
+      starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      const starMaterial = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: size,
+        sizeAttenuation: true,
+        opacity: opacity,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+      });
+      return new THREE.Points(starGeometry, starMaterial);
+    };
 
-    for (let i = 0; i < starCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 2000;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
-    }
+    scene.add(createStarField(2000, 5, 0.5));
+    scene.add(createStarField(1500, 3, 0.7));
+    scene.add(createStarField(1000, 1, 0.9));
 
-    starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-    const starMaterial = new THREE.PointsMaterial({
-      color: 0xffffcc,
-      size: 3,
-      sizeAttenuation: true,
-    });
-
-    const stars = new THREE.Points(starGeometry, starMaterial);
-    scene.add(stars);
-
-    // Animation (coin flipping + moving stars)
+    // Animation loop
     const animate = () => {
       requestAnimationFrame(animate);
       bitcoinMesh.rotation.x += 0.02;
       bitcoinMesh.rotation.y += 0.02;
-      stars.rotation.x += 0.0005;
-      stars.rotation.y += 0.0005;
+      scene.children.forEach(child => {
+        if (child instanceof THREE.Points) {
+          child.rotation.x += 0.0005;
+          child.rotation.y += 0.0005;
+        }
+      });
       renderer.render(scene, camera);
     };
     animate();
@@ -108,7 +127,10 @@ const BitcoinFlip = () => {
     window.addEventListener('resize', handleResize);
 
     return () => {
-      mountRef.current.removeChild(canvas);
+      // Ensure elements exist before manipulation
+      if (mountRef.current && canvas) {
+        mountRef.current.removeChild(canvas);
+      }
       window.removeEventListener('resize', handleResize);
     };
   }, []);

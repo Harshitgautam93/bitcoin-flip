@@ -1,0 +1,29 @@
+/* src/Preloader.css */
+
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: black; /* Background color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0; /* Initially hidden */
+    z-index: 9999;
+  }
+  
+  .preloader-name {
+    font-size: 4rem;
+    color: #ffffff; /* White text color */
+    font-family: Space Mono;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .preloader-part {
+    opacity: 0; /* Start invisible */
+    display: inline-block; /* Allows scaling effect */
+  }
+  
