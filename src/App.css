@@ -54,3 +54,68 @@ html, body {
   z-index: 1; /* Ensure content is above the background */
   color: white; /* Make text visible against the dark background */
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Prevent body scroll */
+}
+
+#root {
+  height: 100%;
+  overflow: hidden; /* Prevent body scroll */
+}
+
+.scroll-container {
+  height: 200vh; /* Make this larger than viewport height for scrolling effect */
+  position: relative;
+}
+
+.threejs-canvas {
+  width: 100vw;
+  height: 100vh; /* Take full viewport height initially */
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* Ensure the body takes the full height */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* Main container for the app */
+.app {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/* Fixed Three.js background */
+.BitcoinFlip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; /* Make sure it stays behind content */
+}
+
+/* Content sections */
+.content {
+  position: relative;
+  z-index: 1; /* Make sure content is above the background */
+  padding: 60px 20px; /* Adjust padding to avoid overlap with the navbar */
+}
+
+.section {
+  height: 100vh; /* Each section takes up the full viewport height */
+  background: rgba(255, 255, 255, 0.8); /* Semi-transparent background for sections */
+  margin-bottom: 20px; /* Space between sections */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #333;
+}

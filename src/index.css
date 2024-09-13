@@ -11,3 +11,33 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrollbars if unnecessary */
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Prevent body scroll */
+}
+
+#root {
+  height: 100%;
+  overflow: hidden; /* Prevent body scroll */
+}
+
+.scroll-container {
+  height: 200vh; /* Make this larger than viewport height for scrolling effect */
+  position: relative;
+}
+
+.threejs-canvas {
+  width: 100vw;
+  height: 100vh; /* Take full viewport height initially */
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+

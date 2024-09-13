@@ -1,39 +1,53 @@
-
-
+/* General Navbar Styles */
 .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    backdrop-filter: blur(10px); /* Optional: adds a blur effect to the background */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    z-index: 1000; /* Ensures the navbar is above other content */
-  }
-  
-  .navbar-menu {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    height: 60px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  
-  .navbar-menu li {
-    margin: 0;
-  }
-  
-  .navbar-menu a {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 18px;
-    padding: 15px 20px;
-    transition: color 0.3s;
-  }
-  
-  .navbar-menu a:hover {
-    color: #f0f0f0;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Center all items horizontally */
+  align-items: center;
+  padding: 10px 20px;
+  background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent background */
+  backdrop-filter: blur(8px); /* Subtle blur effect */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  z-index: 1000; /* Ensures the navbar stays above other content */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+/* Navbar Container to Center Content */
+.navbar-container {
+  display: flex;
+  justify-content: space-between; /* Space out the logo and links */
+  align-items: center;
+  width: 100%; /* Full width of the navbar */
+  max-width: 1200px; /* Optional: Limit the maximum width */
+}
+
+/* Navbar Logo */
+.navbar-logo {
+  height: 40px; /* Adjust the size of your logo */
+}
+
+/* Navbar Links */
+.navbar-links {
+  display: flex;
+  gap: 20px; /* Space between navbar links */
+}
+
+.navbar-link {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 10px 15px;
+  transition: color 0.3s ease;
+}
+
+.navbar-link:hover {
+  color: #ddd; /* Lighter color on hover */
+}
+
+/* Optional: Add padding to the body to prevent content hiding behind the navbar */
+body {
+  padding-top: 60px; /* Adjust based on the navbar height */
+}

@@ -1,48 +1,40 @@
+
+
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const BitcoinFlip = () => {
+const SpaceSection = () => {
   const mountRef = useRef(null);
 
   useEffect(() => {
-    // Scene setup
+    const section = mountRef.current;
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, section.clientWidth / section.clientHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    
-    // Setting canvas size
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    
-    // Append canvas to the mountRef
-    const canvas = renderer.domElement;
-    mountRef.current.appendChild(canvas);
 
-    // Background color
+    renderer.setSize(section.clientWidth, section.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    section.appendChild(renderer.domElement);
+
     scene.background = new THREE.Color(0x000000);
 
-    // Ambient light for consistent illumination
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
     scene.add(ambientLight);
 
-    // Point lights for even illumination from various angles
-    const pointLight1 = new THREE.PointLight(0xffffff, 1);
-    pointLight1.position.set(10, 10, 10);
-    scene.add(pointLight1);
+    const pointLights = [
+      new THREE.PointLight(0xffffff, 1, 0),
+      new THREE.PointLight(0xffffff, 1, 0),
+      new THREE.PointLight(0xffffff, 1, 0),
+      new THREE.PointLight(0xffffff, 1, 0)
+    ];
 
-    const pointLight2 = new THREE.PointLight(0xffffff, 1);
-    pointLight2.position.set(-10, -10, 10);
-    scene.add(pointLight2);
+    pointLights[0].position.set(10, 10, 10);
+    pointLights[1].position.set(-10, -10, 10);
+    pointLights[2].position.set(10, -10, -10);
+    pointLights[3].position.set(-10, 10, -10);
 
-    const pointLight3 = new THREE.PointLight(0xffffff, 1);
-    pointLight3.position.set(10, -10, -10);
-    scene.add(pointLight3);
+    pointLights.forEach(light => scene.add(light));
 
-    const pointLight4 = new THREE.PointLight(0xffffff, 1);
-    pointLight4.position.set(-10, 10, -10);
-    scene.add(pointLight4);
-
-    // Texture loader
     const textureLoader = new THREE.TextureLoader();
     const coinTexture = textureLoader.load('/bitcoin.png', () => {
       console.log('Texture loaded successfully!');
@@ -50,23 +42,21 @@ const BitcoinFlip = () => {
       console.error('Texture loading failed', err);
     });
 
-    // Enhanced material to reduce light effects
     const material = new THREE.MeshStandardMaterial({
       map: coinTexture,
       metalness: 0.1,
-      roughness: 0.1,
+      roughness: 0.6,
+      emissive: new THREE.Color(0x000000),
+      emissiveIntensity: 0
     });
 
-    // Coin geometry
     const geometry = new THREE.CylinderGeometry(3, 3, 0.4, 100);
     const bitcoinMesh = new THREE.Mesh(geometry, material);
     bitcoinMesh.position.set(-10, 0, 0);
     scene.add(bitcoinMesh);
 
-    // Camera position
     camera.position.set(0, 0, 10);
 
-    // Starfield with larger particles
     const starGeometry = new THREE.BufferGeometry();
     const starCount = 1000;
     const positions = new Float32Array(starCount * 3);
@@ -88,7 +78,15 @@ const BitcoinFlip = () => {
     const stars = new THREE.Points(starGeometry, starMaterial);
     scene.add(stars);
 
-    // Animation (coin flipping + moving stars)
+    function handleResize() {
+      renderer.setSize(section.clientWidth, section.clientHeight);
+      camera.aspect = section.clientWidth / section.clientHeight;
+      camera.updateProjectionMatrix();
+    }
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
     const animate = () => {
       requestAnimationFrame(animate);
       bitcoinMesh.rotation.x += 0.02;
@@ -99,21 +97,13 @@ const BitcoinFlip = () => {
     };
     animate();
 
-    // Handle window resizing
-    const handleResize = () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
-      mountRef.current.removeChild(canvas);
+      section.removeChild(renderer.domElement);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
 
-  return <div ref={mountRef} className="threejs-canvas" />;
+  return <div ref={mountRef} style={{ width: '100%', height: '100%' }} />;
 };
 
-export default BitcoinFlip;
+export default SpaceSection;
